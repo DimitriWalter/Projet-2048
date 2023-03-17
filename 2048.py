@@ -1,6 +1,6 @@
 import tkinter as tk
 import numpy as np
 
-grille = np.zeros((4,4),dtype=int)
+grille = [[0 for i in range(4)]]*4
 print(grille)
 
