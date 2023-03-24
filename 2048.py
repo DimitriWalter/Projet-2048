@@ -3,7 +3,7 @@ import numpy as np
 from random import randint
 
 ######################### Création de la grille #########################
-
+'''
 def new_grid() -> list:
     '''Crée une nouvelle grille vide'''
     return(np.zeros((4,4), dtype =  int))
@@ -28,41 +28,121 @@ def print_grid():
 print(new_grid())
 
 print(new_grid().shape)
+'''
 
-########################## Interface graphique ##########################
-root = tk.Tk()
-root.resizable(width=False, height=False)
-root.title("2048")
-
-def UI_grid():
-    grid = new_grid()
-    SIZE = new_grid().shape[0] # Taille de la matrice
-    SIDE = 500
-
-    back = tk.Canvas(background = "grey", height = SIDE, width = SIDE)
-    back.grid(row = 0, column = 0, rowspan = SIZE, columnspan = SIZE)
-    for x in range(SIZE):
-        for y in range(SIZE):
-            box = tk.Frame()
-            box_text = tk.Label(box, text = grid[x][y], height=SIZE*2-1, width=SIZE*4)
-            box.grid(row=y, column=x)
-            box_text.pack()
-
-def play():
-    assign_block()
-
-def leave():
-    root.destroy()
+ # Interface graphique
+    
+racine = tk.Tk()
+racine.title("2048")
 
 
-UI_grid()
-playButton = tk.Button(text = "Play", command=play)
-playButton.grid(row=5,column=0)
-leaveButton = tk.Button(text = "Leave", command=leave)
-leaveButton.grid(row=5, column=1)
-print()
+    # Variables globales
+        
+cellules = []   # contient chaque détail de chaque tuile (couleur+nombre)
+matrice = [] # contient les nombres présents sur la grille
+end = None   # cette variable donnera si la partie est gagnée ou perdue,
+              # 1 = gagné et 0 = perdu
 
-root.mainloop()
+
+# Fonctions premières  
+       
+def Creation_Interface():
+    """Cette fonction va créer la plateforme de jeu"""
+    global cellules
+    for i in range (4):
+        ligne = []
+        for j in range (4):
+            cellule_frame = tk.Frame(background, bg=c.COULEUR_CELLULE_VIDE, width=120, height=120)
+            cellule_frame.grid(row=i, column=j, padx=5, pady=5)
+            cellule_number = tk.Label(background, bg=c.COULEUR_CELLULE_VIDE)
+            cellule_number.grid(row=i, column=j)
+            cellule_data = {"frame": cellule_frame, "number": cellule_number}
+            ligne.append(cellule_data)
+        cellules.append(ligne)
+    
+    
+def Actualisation_Interface():
+    """Cette fonction va actualiser les couleurs/affichages dans le plateau"""
+    global cellules
+    for i in range (4):
+        for j in range (4):
+            valeur_cellule = matrice[i][j]
+            if valeur_cellule == 0:
+                cellules[i][j]["frame"].config(bg=c.COULEUR_CELLULE_VIDE)
+                cellules[i][j]["number"].config(bg=c.COULEUR_CELLULE_VIDE, text="") 
+            else:
+                cellules[i][j]["frame"].config(bg=c.COULEURS_CELLULES[valeur_cellule])
+                cellules[i][j]["number"].config(bg=c.COULEURS_CELLULES[valeur_cellule], 
+                                             fg=c.NOMBRES_CELLULES[valeur_cellule],
+                                             font=c.FONTS_CELLULES[valeur_cellule],
+                                             text=str(valeur_cellule))
+    
+
+def Generateur_Tuile(mat):
+    """ Cette fonction donne à matrice une tuile créée aléatoirement"""
+    row = rd.randint(0,3)
+    col = rd.randint(0,3)
+    if Zero_In_Mat() == True:
+        while mat[row][col]!=0:
+            row = rd.randint(0,3)
+            col = rd.randint(0,3)
+        mat[row][col] = np.random.choice(np.arange(2, 5, 2), p=[0.9, 0.1])
+    else:
+        pass
+    return mat
+
+
+    # Empilation
+def Empiler_Gauche(mat):
+    """Place les tuiles vers la gauche"""
+    matrice2 = [[0]*4 for _ in range (4)]
+    for i in range (4):
+        pos = 0
+        for j in range (4):
+            if mat[i][j] != 0:
+                matrice2[i][pos] = mat[i][j]
+                pos+=1
+    mat = matrice2  
+    return mat
+    
+def Empiler_Droite(mat):
+    """Place les tuiles vers la droite"""
+    matrice2 = [[0]*4 for _ in range (4)]
+    for i in range (4):
+        pos = -1
+        for j in range (1,5):
+            if mat[i][-j] != 0:
+                matrice2[i][pos] = mat[i][-j]
+                pos-=1
+    mat = matrice2
+    return mat
+
+def Empiler_Haut(mat):
+    """Place les tuiles vers le haut"""
+    matrice2 = [[0]*4 for _ in range (4)]
+    for j in range (4):
+        pos = 0
+        for i in range (4):
+            if mat[i][j] != 0:
+                matrice2[pos][j] = mat[i][j]
+                pos+=1
+    mat = matrice2
+    return mat
+
+def Empiler_Bas(mat):
+    """Place les tuiles vers le bas"""
+    matrice2 = [[0]*4 for _ in range (4)]
+    for j in range (4):
+        pos = -1
+        for i in range (1,5):
+            if mat[-i][j] != 0:
+                matrice2[pos][j] = mat[-i][j]
+                pos-=1
+    mat = matrice2
+    return mat
+
+
+racine.mainloop()
 
 GRID_COULEUR = "#a39489" 
 COULEUR_CELLULE_VIDE = "#c2b3a9" 
