@@ -1,34 +1,8 @@
 import tkinter as tk
-import numpy as np
-from random import randint
+import random as rd # libraire pour choisir aléatoirement des tuiles
+import numpy as np # libraire pour appliquer des probabilités sur les apparitions de tuiles
+import color as c # librairie pour les couleurs des tuiles/canvas
 
-######################### Création de la grille #########################
-'''
-def new_grid() -> list:
-    '''Crée une nouvelle grille vide'''
-    return(np.zeros((4,4), dtype =  int))
-
-def rdm_coord() -> tuple: 
-    '''Choisis des coordonnées aléatoire'''
-    x,y = randint(0,3), randint(0,3)
-    return(x,y)
-
-def rdm_block():
-    '''Choisis un block aléatoire'''
-    choix = [2,2,2,2,2,2,2,2,2,4] # 2 est 9 fois plus probable que 4
-    return(choix[randint(0,1)])
-
-def assign_block():
-    '''Met le bloc choisis aléatoirement aux coordonnées aléatoire'''
-    new_grid()[rdm_coord()] = rdm_block()
-
-def print_grid():
-    '''Affiche la grille dans la console'''
-    return 
-print(new_grid())
-
-print(new_grid().shape)
-'''
 
  # Interface graphique
     
@@ -52,9 +26,9 @@ def Creation_Interface():
     for i in range (4):
         ligne = []
         for j in range (4):
-            cellule_frame = tk.Frame(background, bg=c.COULEUR_CELLULE_VIDE, width=120, height=120)
+            cellule_frame = tk.Frame(background, bg="#c2b3a9" , width=120, height=120)
             cellule_frame.grid(row=i, column=j, padx=5, pady=5)
-            cellule_number = tk.Label(background, bg=c.COULEUR_CELLULE_VIDE)
+            cellule_number = tk.Label(background, bg="#c2b3a9" )
             cellule_number.grid(row=i, column=j)
             cellule_data = {"frame": cellule_frame, "number": cellule_number}
             ligne.append(cellule_data)
@@ -68,15 +42,14 @@ def Actualisation_Interface():
         for j in range (4):
             valeur_cellule = matrice[i][j]
             if valeur_cellule == 0:
-                cellules[i][j]["frame"].config(bg=c.COULEUR_CELLULE_VIDE)
-                cellules[i][j]["number"].config(bg=c.COULEUR_CELLULE_VIDE, text="") 
+                cellules[i][j]["frame"].config(bg="#c2b3a9" )
+                cellules[i][j]["number"].config(bg="#c2b3a9" , text="") 
             else:
                 cellules[i][j]["frame"].config(bg=c.COULEURS_CELLULES[valeur_cellule])
                 cellules[i][j]["number"].config(bg=c.COULEURS_CELLULES[valeur_cellule], 
                                              fg=c.NOMBRES_CELLULES[valeur_cellule],
                                              font=c.FONTS_CELLULES[valeur_cellule],
                                              text=str(valeur_cellule))
-    
 
 def Generateur_Tuile(mat):
     """ Cette fonction donne à matrice une tuile créée aléatoirement"""
@@ -91,6 +64,12 @@ def Generateur_Tuile(mat):
         pass
     return mat
 
+def Zero_In_Mat():
+    """Regarde s'il y a encore des espaces vides'"""
+    for i in range(4):
+        if 0 in matrice[i]:
+            return True
+    return False
 
     # Empilation
 def Empiler_Gauche(mat):
@@ -141,57 +120,123 @@ def Empiler_Bas(mat):
     mat = matrice2
     return mat
 
+# Combinaison
+def Combiner_Gauche(mat):
+    """ Cette fonction permettra de combiner 2 tuiles de même nombre vers la gauche"""
+    for i in range (4):
+        for j in range (3):
+            if mat[i][j] != 0 and mat[i][j] == mat[i][j+1]:
+                mat[i][j] *= 2
+                mat[i][j+1] = 0
+    return mat
+                
+def Combiner_Droite(mat):
+    """ Cette fonction permettra de combiner 2 tuiles de même nombre vers la droite"""
+    for i in range (4):
+        for j in range (1,4):
+            if mat[i][-j] != 0 and mat[i][-j] == mat[i][-j-1]:
+                mat[i][-j] *= 2
+                mat[i][-j-1] = 0
+    return mat
+                
+def Combiner_Haut(mat):
+    """ Cette fonction permettra de combiner 2 tuiles de même nombre vers le haut"""
+    for i in range (3):
+        for j in range (4):
+            if mat[i][j] != 0 and mat[i][j] == mat[i+1][j]:
+                mat[i][j] *= 2
+                mat[i+1][j] = 0
+    return mat
+                
+def Combiner_Bas(mat):
+    """ Cette fonction permettra de combiner 2 tuiles de même nombre vers le bas"""
+    for i in range (1,4):
+        for j in range (4):
+            if mat[-i][j] != 0 and mat[-i][j] == mat[-i-1][j]:
+                mat[-i][j] *= 2
+                mat[-i-1][j] = 0
+    return mat
+
+
+       
+def Exit_Button():
+    """ Cette fonction est destinée au bouton 'Exit' """
+    racine.destroy()
+
+## Boutons :
+
+Start = tk.Button(text="Start", 
+                    height=1, width=4,
+                    font=("Helvetica", "10")
+        
+                  )
+Start.grid(row=0, column=0)
+
+Exit = tk.Button(text="Exit", 
+                    height=1, width=4,
+                    font=("Helvetica", "10"),
+                    command=Exit_Button
+                  )
+Exit.grid(row=1, column=0)
+
+
+Save = tk.Button(text="Save", 
+                    height=1, width=4,
+                    font=("Helvetica", "10")
+                    
+                  )
+Save.grid(row=0, column=1)
+
+Load = tk.Button(text="Load", 
+                    height=1, width=4,
+                    font=("Helvetica", "10")
+            
+                  )
+Load.grid(row=1, column=1)
+
+
+    # Boutons déplacement  
+    
+Haut = tk.Button(text="Up", 
+                    height=1, width=4,
+                    font=("Helvetica", "10")
+                    
+                  )
+Haut.grid(row=0, column=16)
+
+Bas = tk.Button(text="Down", 
+                    height=1, width=4,
+                    font=("Helvetica", "10")
+                    
+                  )
+Bas.grid(row=2, column=16)
+
+
+Gauche = tk.Button(text="Left", 
+                    height=1, width=4,
+                    font=("Helvetica", "10")
+                    
+                  )
+Gauche.grid(row=1, column=15)
+
+Droite = tk.Button(text="Right", 
+                    height=1, width=4,
+                    font=("Helvetica", "10")
+
+                  )
+Droite.grid(row=1, column=17)
+
+
+    # Background
+        
+background = tk.Frame(racine, 
+                bg=c.GRID_COULEUR, 
+                bd=3, width=570, 
+                height=570
+                ) 
+                
+background.grid(pady=40, columnspan=20) #columnspan=20 pour placer correctement les boutons
+
+Creation_Interface()
 
 racine.mainloop()
-
-GRID_COULEUR = "#a39489" 
-COULEUR_CELLULE_VIDE = "#c2b3a9" 
-SCORE_LABEL_FONT = ("Verdana", 24)
-SCORE_FONT =("Helvetica", 36, "bold")
-GAME_OVER_FONT = ("Helvetica", 48, "bold")
-GAME_OVER_FONT_COULEUR = "#ffffff" 
-WINNER_BG = "#ffcc00" 
-LOSER_BG = "#a39489" 
-
-
-COULEURS_CELLULES = {
-	2: "#fcefe6",
-	4: "#f2e8cb",
-	8: "#f5b682",
-	16: "#f29446",
-	32: "#ff775c",
-	64: "#e64c2e",
-	128: "#ede291",
-	256: "#fce130",
-	512: "#ffdb4a",
-	1024: "#f0b922",
-	2048: "#fad74d"
-}
-
-NOMBRES_CELLULES = {
-	2: "#695c57",
-	4: "#695c57",
-	8: "#ffffff",
-	16: "#ffffff",
-	32: "#ffffff",
-	64: "#ffffff",
-	128: "#ffffff",
-	256: "#ffffff",
-	512: "#ffffff",
-	1024: "#ffffff",
-	2048: "#ffffff"
-}
-
-FONTS_CELLULES = {
-	2: ("Helvetica", 55, "bold"),
-	4: ("Helvetica", 55, "bold"),
-	8: ("Helvetica", 55, "bold"),
-	16: ("Helvetica", 50, "bold"),
-	32: ("Helvetica", 50, "bold"),
-	64: ("Helvetica", 50, "bold"),
-	128: ("Helvetica", 45, "bold"),
-	256: ("Helvetica", 45, "bold"),
-	512: ("Helvetica", 45, "bold"),
-	1024: ("Helvetica", 40, "bold"),
-	2048: ("Helvetica", 40, "bold"),
-}
