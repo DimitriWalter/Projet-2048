@@ -22,15 +22,20 @@ def assign_block():
     '''Met le bloc choisis aléatoirement aux coordonnées aléatoire'''
     new_grid()[rdm_coord()] = rdm_block()
 
+def print_grid():
+    '''Affiche la grille dans la console'''
+    return 
 print(new_grid())
 
 print(new_grid().shape)
 
 ########################## Interface graphique ##########################
 root = tk.Tk()
+root.resizable(width=False, height=False)
 root.title("2048")
 
 def UI_grid():
+    grid = new_grid()
     SIZE = new_grid().shape[0] # Taille de la matrice
     SIDE = 500
 
@@ -38,11 +43,22 @@ def UI_grid():
     back.grid(row = 0, column = 0, rowspan = SIZE, columnspan = SIZE)
     for x in range(SIZE):
         for y in range(SIZE):
-            box = tk.Frame(background="ivory", height = SIDE//4, width = SIDE//4)
+            box = tk.Frame()
+            box_text = tk.Label(box, text = grid[x][y], height=SIZE*2-1, width=SIZE*4)
             box.grid(row=y, column=x)
+            box_text.pack()
 
+def play():
+    assign_block()
+
+def leave():
+    root.destroy()
 
 
 UI_grid()
-
+playButton = tk.Button(text = "Play", command=play)
+playButton.grid(row=5,column=0)
+leaveButton = tk.Button(text = "Leave", command=leave)
+leaveButton.grid(row=5, column=1)
+print()
 root.mainloop()
