@@ -64,12 +64,6 @@ def Generateur_Tuile(mat):
         pass
     return mat
 
-def Zero_In_Mat():
-    """Regarde s'il y a encore des espaces vides'"""
-    for i in range(4):
-        if 0 in matrice[i]:
-            return True
-    return False
 
     # Empilation
 def Empiler_Gauche(mat):
@@ -157,6 +151,8 @@ def Combiner_Bas(mat):
                 mat[-i-1][j] = 0
     return mat
 
+## Fonctions associées aux boutons : 
+
 def Generateur():
     """ Cette fonction génère 2 tuiles aléatoirement et les affiche dans le jeu """
     global cellules
@@ -200,6 +196,26 @@ def Start_Button():
 def Exit_Button():
     """ Cette fonction est destinée au bouton 'Exit' """
     racine.destroy()
+
+## Fonctions associées aux tests au cours du jeu :
+
+def Mouv_Hozizontale():
+    """Regarde si on peut toujours se déplacer de manière horizontale"""
+    pass
+
+def Mouv_Verticale():
+    """Regarde si on peut toujours se déplacer de manière verticale"""
+    pass
+
+def Zero_In_Mat():
+    """Regarde s'il y a encore des espaces vides'"""
+    for i in range(4):
+        if 0 in matrice[i]:
+            return True
+    return False
+
+def Game_Over():
+    pass
 
 def Affich_Game_Over(): #//créer un fond tout blanc pour afficher winner ou looser
     Creation_Interface()
