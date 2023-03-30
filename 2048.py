@@ -1,10 +1,10 @@
-import tkinter as tk
+import tkinter as tk # librairie interphace graphique
 import random as rd # libraire pour choisir aléatoirement des tuiles
 import numpy as np # libraire pour appliquer des probabilités sur les apparitions de tuiles
 import color as c # librairie pour les couleurs des tuiles/canvas
 
 
- # Interface graphique
+# Interface graphique
     
 racine = tk.Tk()
 racine.title("2048")
@@ -157,6 +157,44 @@ def Combiner_Bas(mat):
                 mat[-i-1][j] = 0
     return mat
 
+def Generateur():
+    """ Cette fonction génère 2 tuiles aléatoirement et les affiche dans le jeu """
+    global cellules
+    global matrice
+    # réinitialiser la plateforme de jeu ainsi que les 2 tuiles placées
+    matrice = []
+    cellules = []
+    Creation_Interface()
+    
+    # début du code
+    matrice = [[0]*4 for _ in range (4)]
+    
+    # générer 2 tuiles aléatoires
+    row = rd.randint(0,3)
+    col = rd.randint(0,3)
+    tuile = np.random.choice(np.arange(2, 5, 2), p=[0.9, 0.1])
+    matrice[row][col] = tuile 
+    cellules[row][col]["frame"].config(bg=c.COULEURS_CELLULES[tuile])
+    cellules[row][col]["number"].config(bg=c.COULEURS_CELLULES[tuile], 
+                                     fg=c.NOMBRES_CELLULES[tuile], 
+                                     font=c.FONTS_CELLULES[tuile], 
+                                     text=str(tuile)
+                                     )
+    while matrice[row][col]!=0:
+        row = rd.randint(0,3)
+        col = rd.randint(0,3)
+    tuile = np.random.choice(np.arange(2, 5, 2), p=[0.9, 0.1])
+    matrice[row][col] = tuile 
+    cellules[row][col]["frame"].config(bg=c.COULEURS_CELLULES[tuile])
+    cellules[row][col]["number"].config(bg=c.COULEURS_CELLULES[tuile], 
+                                     fg=c.NOMBRES_CELLULES[tuile], 
+                                     font=c.FONTS_CELLULES[tuile], 
+                                     text=str(tuile)
+ 
+                                     )
+def Start_Button():
+    """ Cette fonction est destinée au bouton 'Start' """
+    Generateur()
 
        
 def Exit_Button():
@@ -167,7 +205,8 @@ def Exit_Button():
 
 Start = tk.Button(text="Start", 
                     height=1, width=4,
-                    font=("Helvetica", "10")
+                    font=("Helvetica", "10"),
+                    command=Start_Button
         
                   )
 Start.grid(row=0, column=0)
