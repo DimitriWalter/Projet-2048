@@ -201,6 +201,28 @@ def Exit_Button():
     """ Cette fonction est destinée au bouton 'Exit' """
     racine.destroy()
 
+def Affich_Game_Over(): #//créer un fond tout blanc pour afficher winner ou looser
+    Creation_Interface()
+    Actualisation_Interface()
+    if end==1:
+        game_over_frame = tk.Frame(background, borderwidth=2)
+        game_over_frame.place(relx=0.5, rely=0.5, anchor="center")
+        tk.Label(game_over_frame,
+                 text="Winner!",
+                 bg=c.WINNER_BG,
+                 fg=c.GAME_OVER_FONT_COULEUR,
+                 font=c.GAME_OVER_FONT).pack()
+    elif end==0:
+        game_over_frame = tk.Frame(background, borderwidth=2)
+        game_over_frame.place(relx=0.5, rely=0.5, anchor="center")
+        tk.Label(game_over_frame,
+                 text="Loser!",
+                 bg=c.LOSER_BG,
+                 fg=c.GAME_OVER_FONT_COULEUR,
+                 font=c.GAME_OVER_FONT).pack()
+    else:
+        pass
+
 ## Boutons :
 
 Start = tk.Button(text="Start", 
