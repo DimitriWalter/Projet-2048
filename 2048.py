@@ -197,6 +197,47 @@ def Exit_Button():
     """ Cette fonction est destinée au bouton 'Exit' """
     racine.destroy()
 
+# Fonctions associées aux déplacements
+
+def Left_Button():
+    global matrice
+    matrice = Empiler_Gauche(matrice)
+    matrice = Combiner_Gauche(matrice)
+    matrice = Empiler_Gauche(matrice)
+    matrice = Generateur_Tuile(matrice)
+    Actualisation_Interface()
+    Game_Over()
+
+
+def Right_Button():
+    global matrice
+    matrice = Empiler_Droite(matrice)
+    matrice = Combiner_Droite(matrice)
+    matrice = Empiler_Droite(matrice)
+    matrice = Generateur_Tuile(matrice)
+    Actualisation_Interface()
+    Game_Over()
+
+
+def Up_Button():
+    global matrice
+    matrice = Empiler_Haut(matrice)
+    matrice = Combiner_Haut(matrice)
+    matrice = Empiler_Haut(matrice)
+    matrice = Generateur_Tuile(matrice)
+    Actualisation_Interface()
+    Game_Over()
+
+
+def Down_Button():
+    global matrice
+    matrice = Empiler_Bas(matrice)
+    matrice = Combiner_Bas(matrice)
+    matrice = Empiler_Bas(matrice)
+    matrice = Generateur_Tuile(matrice)
+    Actualisation_Interface()
+    Game_Over()
+
 ## Fonctions associées aux tests au cours du jeu :
 
 def Mouv_Hozizontale():
@@ -284,14 +325,14 @@ Load.grid(row=1, column=1)
     
 Haut = tk.Button(text="Up", 
                     height=1, width=4,
-                    font=("Helvetica", "10")
+                    font=("Helvetica", "10"),command=Up_Button
                     
                   )
 Haut.grid(row=0, column=16)
 
 Bas = tk.Button(text="Down", 
                     height=1, width=4,
-                    font=("Helvetica", "10")
+                    font=("Helvetica", "10"),command=Down_Button
                     
                   )
 Bas.grid(row=2, column=16)
@@ -299,14 +340,14 @@ Bas.grid(row=2, column=16)
 
 Gauche = tk.Button(text="Left", 
                     height=1, width=4,
-                    font=("Helvetica", "10")
+                    font=("Helvetica", "10"),command=Left_Button
                     
                   )
 Gauche.grid(row=1, column=15)
 
 Droite = tk.Button(text="Right", 
                     height=1, width=4,
-                    font=("Helvetica", "10")
+                    font=("Helvetica", "10"),command=Right_Button
 
                   )
 Droite.grid(row=1, column=17)
