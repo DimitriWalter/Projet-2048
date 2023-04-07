@@ -242,11 +242,19 @@ def Down_Button():
 
 def Mouv_Hozizontale():
     """Regarde si on peut toujours se déplacer de manière horizontale"""
-    pass
+    for i in range (4):
+        for j in range (1,3):
+            if matrice[i][j] == matrice[i][j+1] or matrice[i][j] == matrice[i][j-1]:
+                return True
+    return False
 
 def Mouv_Verticale():
     """Regarde si on peut toujours se déplacer de manière verticale"""
-    pass
+    for i in range (1,3):
+        for j in range (4):
+            if matrice[i][j] == matrice[i+1][j] or matrice[i][j] == matrice[i-1][j]:
+                return True
+    return False
 
 def Zero_In_Mat():
     """Regarde s'il y a encore des espaces vides'"""
