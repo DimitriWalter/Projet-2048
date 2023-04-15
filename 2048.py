@@ -207,6 +207,17 @@ def Save_Button():
 def Load_Button():
     """ Cette fonction est destinée au bouton 'Load' """
     global matrice
+    
+    matrice2 = []
+    fic = open("save_liste.txt", "rb")
+    b = pc.load(fic)
+    fic.close()
+    for line in b:
+        matrice2.append(line)
+    
+    matrice = matrice2
+
+    Actualisation_Interface()
 
 # Fonctions associées aux déplacements
 
