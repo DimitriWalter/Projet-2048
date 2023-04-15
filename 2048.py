@@ -2,7 +2,7 @@ import tkinter as tk # librairie interphace graphique
 import random as rd # libraire pour choisir aléatoirement des tuiles
 import numpy as np # libraire pour appliquer des probabilités sur les apparitions de tuiles
 import color as c # librairie pour les couleurs des tuiles/canvas
-
+import pickle as pc # librairie pour la sauvegarde et le chargement de parties
 
 # Interface graphique
     
@@ -197,6 +197,17 @@ def Exit_Button():
     """ Cette fonction est destinée au bouton 'Exit' """
     racine.destroy()
 
+def Save_Button():
+    """ Cette fonction est destinée au bouton 'Save' """
+    fic = open("save_liste.txt", "wb") 
+    pc.dump(matrice, fic)
+    fic.close()
+    
+
+def Load_Button():
+    """ Cette fonction est destinée au bouton 'Load' """
+    global matrice
+
 # Fonctions associées aux déplacements
 
 def Left_Button():
@@ -316,15 +327,15 @@ Exit.grid(row=1, column=0)
 
 Save = tk.Button(text="Save", 
                     height=1, width=4,
-                    font=("Helvetica", "10")
+                    font=("Helvetica", "10"),command=Save_Button
                     
                   )
 Save.grid(row=0, column=1)
 
 Load = tk.Button(text="Load", 
                     height=1, width=4,
-                    font=("Helvetica", "10")
-            
+                    font=("Helvetica", "10"),command=Load_Button
+
                   )
 Load.grid(row=1, column=1)
 
