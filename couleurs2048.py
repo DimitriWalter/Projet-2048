@@ -1,4 +1,4 @@
-FONTS = {
+Fonts = {
 	2: ("Helvetica", 50, "bold"),
 	4: ("Helvetica", 50, "bold"),
 	8: ("Helvetica", 50, "bold"),
@@ -9,10 +9,9 @@ FONTS = {
 	256: ("Helvetica", 45, "bold"),
 	512: ("Helvetica", 45, "bold"),
 	1024: ("Helvetica", 45, "bold"),
-	2048: ("Helvetica", 45, "bold"),
-}
+	2048: ("Helvetica", 45, "bold")  }
 
-COULEURS_CASES = {
+Couleurs_cases = {
 	2: "#fcefe6",
 	4: "#f2e8cb",
 	8: "#f5b682",
@@ -23,10 +22,9 @@ COULEURS_CASES = {
 	256: "#fce130",
 	512: "#ffdb4a",
 	1024: "#f0b922",
-	2048: "#fad74d"
-}
+	2048: "#fad74d"  }
 
-COULEURS_NOMBRES = {
+Couleurs_nombres = {
 	2: "#695c57",
 	4: "#695c57",
 	8: "#ffffff",
@@ -37,5 +35,4 @@ COULEURS_NOMBRES = {
 	256: "#ffffff",
 	512: "#ffffff",
 	1024: "#ffffff",
-	2048: "#ffffff"
-}
+	2048: "#ffffff"  }

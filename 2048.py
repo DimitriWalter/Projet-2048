@@ -1,380 +1,341 @@
 import tkinter as tk
-import random as rd
+from random import *
 import numpy as np # libraire pour effectuer des probabilités sur les tuiles
 import couleurs2048 as color # librairie pour les couleurs des tuiles/canvas
 import pickle as pc # librairie pour la sauvegarde et le chargement de parties
 
-# Début de l'interface graphique
-    
+## Création de la fenêtre graphique :
+
 root = tk.Tk()
 root.title("2048")
 
-# On utlise plusieurs variables globales qu'on appellera dans différentes fonctions :
-        
-cases = []   # contient chaque détail de chaque tuile (couleur+nombre)
-grille = [] # contient les nombres présents sur la grille
-score = None   # cette variable donnera si la partie est gagnée ou perdue, elle prendra 1 si la partie est gagnée et 0 si elle est perdue  
+## Variables globales principales :
 
-# Créer l'interface graphique du jeu 2048 :   
+cases = []   # possède les détail de chaque tuile (couleur+nombre)
 
-def Interface():
-   #Cette fonction va créer la plateforme de jeu
+grille = [] # possède les nombres présents sur la grille  
+
+##  FONCTIONS CONCERNANT L'INTERFACE GRAPHIQUE :
+
+# Fonction qui va créer l'interface graphique du jeu 2048 :   
+
+def Plateforme():
     global cases
     for i in range (4):
-        ligne = []
+        rangée = []
         for j in range (4):
-            case_frame = tk.Frame(bg_grille, bg="#c2b3a9" , width=120, height=120)
-            case_frame.grid(row=i, column=j, padx=5, pady=5)
-            case_nombre = tk.Label(bg_grille, bg="#c2b3a9" )
-            case_nombre.grid(row=i, column=j)
-            case_data = {"frame": case_frame, "number": case_nombre}
-            ligne.append(case_data)
-        cases.append(ligne)
+            frame = tk.Frame(bg_grille, bg="#c2b3a9" , width=120, height=120)
+            frame.grid(row=i, column=j, padx=5, pady=5)
+            nombre = tk.Label(bg_grille, bg="#c2b3a9" )
+            nombre.grid(row=i, column=j)
+            case_dict = {"cases": frame, "nombre": nombre}
+            rangée.append(case_dict)
+        cases.append(rangée)
     
-    
-def Actualisation_Inter():
-    #Cette fonction va actualiser les couleurs/affichages dans le plateau
+
+# La fonction suivante sert à mettre à jour la plateforme de jeu (modifier les affichages des cases) :
+
+def Maj_Plateforme():
     global cases
     for i in range (4):
         for j in range (4):
-            valeur_case = grille[i][j]
-            if valeur_case == 0:
-                cases[i][j]["frame"].config(bg="#c2b3a9" )
-                cases[i][j]["number"].config(bg="#c2b3a9" , text="") 
+            if grille[i][j] == 0:
+                cases[i][j]["cases"].config(bg="#c2b3a9" )
+                cases[i][j]["nombre"].config(bg="#c2b3a9" , text="") 
             else:
-                cases[i][j]["frame"].config(bg=color.COULEURS_CASES[valeur_case])
-                cases[i][j]["number"].config(bg=color.COULEURS_CASES[valeur_case],fg=color.COULEURS_NOMBRES[valeur_case],
-                                             font=color.FONTS[valeur_case], text=str(valeur_case))
-
-def Generateur_Tuile(mat):
-    #Cette fonction donne à matrice une tuile créée aléatoirement
-    row = rd.randint(0,3)
-    column = rd.randint(0,3)
-    if Vide_Mat() == True:
-        while mat[row][column]!=0:
-            row = rd.randint(0,3)
-            column = rd.randint(0,3)
-        mat[row][column] = np.random.choice(np.arange(2, 5, 2), p=[0.9, 0.1])
-    else:
-        pass
-    return mat
-
-
-    # Empilation
-def Empiler_Gauche(mat):
-    #Place les tuiles vers la gauche
-    matrice2 = [[0]*4 for _ in range (4)]
-    for i in range (4):
-        pos = 0
-        for j in range (4):
-            if mat[i][j] != 0:
-                matrice2[i][pos] = mat[i][j]
-                pos+=1
-    mat = matrice2  
-    return mat
-    
-def Empiler_Droite(mat):
-    #Place les tuiles vers la droite
-    matrice2 = [[0]*4 for _ in range (4)]
-    for i in range (4):
-        pos = -1
-        for j in range (1,5):
-            if mat[i][-j] != 0:
-                matrice2[i][pos] = mat[i][-j]
-                pos-=1
-    mat = matrice2
-    return mat
-
-def Empiler_Haut(mat):
-    #Place les tuiles vers le haut
-    matrice2 = [[0]*4 for _ in range (4)]
-    for j in range (4):
-        pos = 0
-        for i in range (4):
-            if mat[i][j] != 0:
-                matrice2[pos][j] = mat[i][j]
-                pos+=1
-    mat = matrice2
-    return mat
-
-def Empiler_Bas(mat):
-    #Place les tuiles vers le bas
-    matrice2 = [[0]*4 for _ in range (4)]
-    for j in range (4):
-        pos = -1
-        for i in range (1,5):
-            if mat[-i][j] != 0:
-                matrice2[pos][j] = mat[-i][j]
-                pos-=1
-    mat = matrice2
-    return mat
-
-# Combinaison
-def Combiner_Gauche(mat):
-    #Cette fonction permettra de combiner 2 tuiles de même nombre vers la gauche
-    for i in range (4):
-        for j in range (3):
-            if mat[i][j] != 0 and mat[i][j] == mat[i][j+1]:
-                mat[i][j] *= 2
-                mat[i][j+1] = 0
-    return mat
-                
-def Combiner_Droite(mat):
-    #Cette fonction permettra de combiner 2 tuiles de même nombre vers la droit
-    for i in range (4):
-        for j in range (1,4):
-            if mat[i][-j] != 0 and mat[i][-j] == mat[i][-j-1]:
-                mat[i][-j] *= 2
-                mat[i][-j-1] = 0
-    return mat
-                
-def Combiner_Haut(mat):
-    #Cette fonction permettra de combiner 2 tuiles de même nombre vers le haut
-    for i in range (3):
-        for j in range (4):
-            if mat[i][j] != 0 and mat[i][j] == mat[i+1][j]:
-                mat[i][j] *= 2
-                mat[i+1][j] = 0
-    return mat
-                
-def Combiner_Bas(mat):
-    #Cette fonction permettra de combiner 2 tuiles de même nombre vers le bas
-    for i in range (1,4):
-        for j in range (4):
-            if mat[-i][j] != 0 and mat[-i][j] == mat[-i-1][j]:
-                mat[-i][j] *= 2
-                mat[-i-1][j] = 0
-    return mat
-
-## Fonctions associées aux boutons : 
-
-def Generateur():
-    #Cette fonction génère 2 tuiles aléatoirement et les affiche dans le jeu
-    global cases
-    global grille
-    # réinitialiser la plateforme de jeu ainsi que les 2 tuiles placées
-    grille = []
-    cases = []
-    Interface()
-    
-    # début du code
-    grille = [[0]*4 for _ in range (4)]
-    
-    # générer 2 tuiles aléatoires
-    row = rd.randint(0,3)
-    column = rd.randint(0,3)
-    tuile = np.random.choice(np.arange(2, 5, 2), p=[0.9, 0.1])
-    grille[row][column] = tuile 
-    cases[row][column]["frame"].config(bg=color.COULEURS_CASES[tuile])
-    cases[row][column]["number"].config(bg=color.COULEURS_CASES[tuile], 
-                                     fg=color.COULEURS_NOMBRES[tuile], 
-                                     font=color.FONTS[tuile], 
-                                     text=str(tuile)
-                                     )
-    while grille[row][column]!=0:
-        row = rd.randint(0,3)
-        column = rd.randint(0,3)
-    tuile = np.random.choice(np.arange(2, 5, 2), p=[0.9, 0.1])
-    grille[row][column] = tuile 
-    cases[row][column]["frame"].config(bg=color.COULEURS_CASES[tuile])
-    cases[row][column]["number"].config(bg=color.COULEURS_CASES[tuile], 
-                                     fg=color.COULEURS_NOMBRES[tuile], 
-                                     font=color.FONTS[tuile], 
-                                     text=str(tuile)
- 
-                                     )
-def Start_Button():
-    #Cette fonction est destinée au bouton 'Start'
-    Generateur()
-
-       
-def Exit_Button():
-    #Cette fonction est destinée au bouton 'Exit'
-    root.destroy()
-
-def Save_Button():
-    #Cette fonction est destinée au bouton 'Save'
-    fic = open("save_liste.txt", "wb") 
-    pc.dump(grille, fic)
-    fic.close()
+                cases[i][j]["cases"].config(bg=color.Couleurs_cases[grille[i][j]])
+                cases[i][j]["nombre"].config(bg=color.Couleurs_cases[grille[i][j]],fg=color.Couleurs_nombres[grille[i][j]],font=color.Fonts[grille[i][j]], text=str(grille[i][j]))
     
 
-def Load_Button():
-    #Cette fonction est destinée au bouton 'Load'
-    global grille
-    
-    matrice2 = []
-    fic = open("save_liste.txt", "rb")
-    b = pc.load(fic)
-    fic.close()
-    for line in b:
-        matrice2.append(line)
-    
-    grille = matrice2
+##  FONCTIONS CONCERNANT LA FIN D'UNE PARTIE :
 
-    Actualisation_Inter()
+score = None   # variable qui nous donnera le résultat de la partie, elle prendra 1 si la partie est gagnée et 0 si elle est perdue
 
-# Fonctions associées aux déplacements
+## La fonction suivante transmet à Win_Or_Loose() si le joueur a gagné ou perdu :
 
-def Left_button():
-    global grille
-    grille = Empiler_Gauche(grille)
-    grille = Combiner_Gauche(grille)
-    grille = Empiler_Gauche(grille)
-    grille = Generateur_Tuile(grille)
-    Actualisation_Inter()
-    game_Over()
+def Fin_partie():
+    global score
+    if (2048 in ligne for ligne in grille) == True :
+        score = 1
+        Win_Or_Lose()
+    elif Vide_mat() == False and Test_horizontale() == False and Test_Verticale() == False : 
+        score = 0
+        Win_Or_Lose()
 
+## Fonction qui affiche "Gagné!" si on a gagné et "Perdu!" si on a perdu :
 
-def Right_button():
-    global grille
-    grille = Empiler_Droite(grille)
-    grille = Combiner_Droite(grille)
-    grille = Empiler_Droite(grille)
-    grille = Generateur_Tuile(grille)
-    Actualisation_Inter()
-    game_Over()
+win = tk.Label()
+loose = tk.Label()
+
+def Win_Or_Lose():
+    global win, loose
+    Plateforme()
+    Maj_Plateforme()
+    if score==1:
+        affichage_end = tk.Frame(bg_grille, borderwidth=2)
+        affichage_end.place(relx=0.5, rely=0.5, anchor="center")
+        win = tk.Label(affichage_end, text="Gagné!", bg="#fce130", fg="#ffffff", font=("Arial", 50,"bold")).pack()
+    elif score==0:
+        affichage_end = tk.Frame(bg_grille, borderwidth=4)
+        affichage_end.place(relx=0.5, rely=0.5, anchor="center")
+        loose = tk.Label(affichage_end,  text="Perdu!", bg="#e64c2e", fg="#ffffff", font=("Arial", 50,"bold")).pack()
 
 
-def Up_button():
-    global grille
-    grille = Empiler_Haut(grille)
-    grille = Combiner_Haut(grille)
-    grille = Empiler_Haut(grille)
-    grille = Generateur_Tuile(grille)
-    Actualisation_Inter()
-    game_Over()
+##  FONCTIONS PERMETTANT DE FAIRE DES TESTS PENDANT LA PARTIE (pour savoir si une partie est gagnée ou perdu) :
 
+## Fonction qui permet de vérifier si il y a encore des cases vides dans la grille du jeu, pour vérifier s'il est possible de générer une nouvelle tuile sur la grille :
 
-def Down_button():
-    global grille
-    grille = Empiler_Bas(grille)
-    grille = Combiner_Bas(grille)
-    grille = Empiler_Bas(grille)
-    grille = Generateur_Tuile(grille)
-    Actualisation_Inter()
-    game_Over()
-
-## Fonctions associées aux tests au cours du jeu :
-
-def Mouv_Hozizontale():
-    """Regarde si on peut toujours se déplacer de manière horizontale"""
-    for i in range (4):
-        for j in range (1,3):
-            if grille[i][j] == grille[i][j+1] or grille[i][j] == grille[i][j-1]:
-                return True
+def Vide_mat():
+    for i in range(4):
+        if 0 in grille[i]:
+            return True
     return False
 
-def Mouv_Verticale():
-    """Regarde si on peut toujours se déplacer de manière verticale"""
+## Fonction qui détermine si un mouvement est possible dans une direction verticale :
+
+
+def Test_Verticale():
     for i in range (1,3):
         for j in range (4):
             if grille[i][j] == grille[i+1][j] or grille[i][j] == grille[i-1][j]:
                 return True
     return False
 
-def Vide_Mat():
-    """Regarde s'il y a encore des espaces vides'"""
-    for i in range(4):
-        if 0 in grille[i]:
-            return True
+## Fonction qui détermine si un mouvement est possible dans une direction horizontale :
+
+def Test_horizontale():
+    for i in range (4):
+        for j in range (1,3):
+            if grille[i][j] == grille[i][j+1] or grille[i][j] == grille[i][j-1]:
+                return True
     return False
 
-def game_Over():
-    global score
-    if any(2048 in row for row in grille):
-        score = 1
-        Affich_game_over()
-    elif Vide_Mat()==False and Mouv_Hozizontale()==False and Mouv_Verticale()==False: 
-        score = 0
-        Affich_game_over()
-    else:
-        pass
 
-def Affich_game_over(): #//créer un fond tout blanc pour afficher winner ou looser
-    Interface()
-    Actualisation_Inter()
-    if score==1:
-        game_over_frame = tk.Frame(bg_grille, borderwidth=2)
-        game_over_frame.place(relx=0.5, rely=0.5, anchor="center")
-        tk.Label(game_over_frame,
-                 text="Winner!",
-                 bg="#ffcc00",
-                 fg="#ffffff",
-                 font=("Helvetica", 48, "bold")).pack()
-    elif score==0:
-        game_over_frame = tk.Frame(bg_grille, borderwidth=2)
-        game_over_frame.place(relx=0.5, rely=0.5, anchor="center")
-        tk.Label(game_over_frame,
-                 text="Loser!",
-                 bg="#a39489",
-                 fg="#ffffff",
-                 font=("Helvetica", 48, "bold")).pack()
-    else:
-        pass
+## FONCTIONS AUX DIFFRENTS BOUTONS : 
 
-## Boutons :
+## Fonction utilisé pour le début d'une partie (on l'appellera pour la fonction du bouton Start),
+# elle permet de commencer le jeu en plaçant aléatoirement 2 tuiles de valeurs 2 ou 4 :
 
-Start = tk.Button(text="Start", 
-                    height=1, width=4,
-                    font=("Helvetica", "12","bold"),
-                    command=Start_Button,bg="#fce130"
+def Debut_Partie():
+    global grille, cases
+    grille = []
+    cases = []
+    Plateforme()
+    grille = [[0]*4 for _ in range (4)]
+    i = randint(0,3)
+    j = randint(0,3)
+    grille[i][j] = np.random.choice(np.arange(2, 5, 2), p=[0.9, 0.1]) 
+    cases[i][j]["cases"].config(bg=color.Couleurs_cases[grille[i][j]])
+    cases[i][j]["nombre"].config(bg=color.Couleurs_cases[grille[i][j]], text=str(grille[i][j]), fg=color.Couleurs_nombres[grille[i][j]], font=color.Fonts[grille[i][j]])
+    while grille[i][j]!=0:
+        i = randint(0,3)
+        j = randint(0,3)
+    grille[i][j] = np.random.choice(np.arange(2, 5, 2), p=[0.9, 0.1]) 
+    cases[i][j]["cases"].config(bg=color.Couleurs_cases[grille[i][j]])
+    cases[i][j]["nombre"].config(bg=color.Couleurs_cases[grille[i][j]], text=str(grille[i][j]), fg=color.Couleurs_nombres[grille[i][j]], font=color.Fonts[grille[i][j]])
+
+## Les fonctions ci-dessous permettent de concaténer deux tuiles de la même valeur dans la direction mentionée : 
+
+def Concatener_Up(matrice):
+    for i in range (3):
+        for j in range (4):
+            if matrice[i][j] != 0 and matrice[i][j] == matrice[i+1][j] :
+                matrice[i][j] *= 2
+                matrice[i+1][j] = 0
+    return matrice
+
+def Concatener_Down(matrice):
+    for i in range (1,4):
+        for j in range (4):
+            if matrice[-i][j] != 0 and matrice[-i][j] == matrice[-i-1][j] :
+                matrice[-i][j] *= 2
+                matrice[-i-1][j] = 0
+    return matrice
+
+def Concatener_Left(matrice):
+    for i in range (4):
+        for j in range (3):
+            if matrice[i][j] != 0 and matrice[i][j] == matrice[i][j+1]:
+                matrice[i][j] *= 2
+                matrice[i][j+1] = 0
+    return matrice
+                
+def Concatener_Right(matrice):
+    for i in range (4):
+        for j in range (1,4):
+            if matrice[i][-j] != 0 and matrice[i][-j] == matrice[i][-j-1] :
+                matrice[i][-j] *= 2
+                matrice[i][-j-1] = 0
+    return matrice
+
+## Les fonctions qui superposent les tuiles les unes sur les autres, elles déplacent les tuiles non-nulles de la grille vers la direction mentionée :
+
+def Superposer_Up(matrice):
+    new_matrice = [[0]*4 for i in range(4)]
+    for j in range (4):
+        position = 0
+        for i in range (4):
+            if matrice[i][j] != 0:
+                new_matrice[position][j] = matrice[i][j]
+                position+=1
+    matrice = new_matrice
+    return matrice
+
+def Superposer_Down(matrice):
+    new_matrice = [[0]*4 for i in range(4)]
+    for j in range (4):
+        position = -1
+        for i in range (1,5):
+            if matrice[-i][j] != 0:
+                new_matrice[position][j] = matrice[-i][j]
+                position-=1
+    matrice = new_matrice
+    return matrice
+
+def Superposer_Left(matrice):
+    new_matrice = [[0]*4 for i in range(4)]
+    for i in range (4):
+        position = 0
+        for j in range (4):
+            if matrice[i][j] != 0:
+                new_matrice[i][position] = matrice[i][j]
+                position+=1
+    matrice = new_matrice  
+    return matrice
+    
+def Superposer_Right(matrice):
+    new_matrice = [[0]*4 for i in range(4)]
+    for i in range (4):
+        position = -1
+        for j in range (1,5):
+            if matrice[i][-j] != 0:
+                new_matrice[i][position] = matrice[i][-j]
+                position-=1
+    matrice = new_matrice
+    return matrice
+
+
+## Fonction qui créera à chaque déplacement une tuile aléatoire dans la grille (s'il y a des cases vides) :
+
+def tuile_aleatoire(matrice):
+    ligne = randint(0,3)
+    colonne = randint(0,3)
+    if Vide_mat() == True:
+        while matrice[ligne][colonne]!=0:
+            ligne = randint(0,3)
+            colonne = randint(0,3)
+        matrice[ligne][colonne] = np.random.choice(np.arange(2, 5, 2), p=[0.9, 0.1])
+    return matrice
+
+ # Fonction pour le bouton "Save" :
+def save_button():
+    fic = open("save_liste.txt", "wb") 
+    pc.dump(grille, fic)
+    fic.close()
+
+ # Fonction pour le bouton "Load" :
+def load_button():
+    global grille
+    matrice2 = []
+    fic = open("save_liste.txt", "rb")
+    b = pc.load(fic)
+    fic.close()
+    for line in b:
+        matrice2.append(line)
+    grille = matrice2
+    Maj_Plateforme()
+
+ # Fonction pour le bouton "Start" :
+def start_button():
+    Debut_Partie()
+
+ # Fonction pour le bouton "Exit"  :     
+def exit_button():
+    root.destroy()
+
+  # Fonction pour le bouton "Up" :
+def up_button():
+    global grille
+    grille = Superposer_Up(grille)
+    grille = Concatener_Up(grille)
+    grille = Superposer_Up(grille)
+    grille = tuile_aleatoire(grille)
+    Maj_Plateforme()
+    Fin_partie()
+
+  # Fonction pour le bouton "Down" :
+def down_button():
+    global grille
+    grille = Superposer_Down(grille)
+    grille = Concatener_Down(grille)
+    grille = Superposer_Down(grille)
+    grille = tuile_aleatoire(grille)
+    Maj_Plateforme()
+    Fin_partie()
+
+  # Fonction pour le bouton "Left" :
+def left_button():
+    global grille
+    grille = Superposer_Left(grille)
+    grille = Concatener_Left(grille)
+    grille = Superposer_Left(grille)
+    grille = tuile_aleatoire(grille)
+    Maj_Plateforme()
+    Fin_partie()
+
+  # Fonction pour le bouton "Right" :
+def right_button():
+    global grille
+    grille = Superposer_Right(grille)
+    grille = Concatener_Right(grille)
+    grille = Superposer_Right(grille)
+    grille = tuile_aleatoire(grille)
+    Maj_Plateforme()
+    Fin_partie()
+
+# Couleur de fond de la grile :
         
-                  )
-Start.grid(row=2, column=2)
+bg_grille = tk.Frame(root,width=570, height=570, bg="#a39489", bd=5) 
+bg_grille.grid(pady=20,row=0,column=0,rowspan=20,padx=20)
 
-Exit = tk.Button(text="Exit", 
-                    height=1, width=4,
-                    font=("Helvetica", "12","bold"),
-                    command=Exit_Button,bg="#ff775c"
-                  )
-Exit.grid(row=3, column=2)
+## Boutons principales :
 
-
-Save = tk.Button(text="Save", 
-                    height=1, width=4,
-                    font=("Helvetica", "12","bold"),command=Save_Button,bg="#f5b682"
-                    
-                  )
+Save = tk.Button(text="Save", font=("Helvetica", "12","bold"),bg="#f5b682",height=1, width=4,command=save_button)
 Save.grid(row=8, column=2)
 
-Load = tk.Button(text="Load", 
-                    height=1, width=4,
-                    font=("Helvetica", "12","bold"),command=Load_Button,bg='#f5b682'
-
-                  )
+Load = tk.Button(text="Load",font=("Helvetica", "12","bold"),bg='#f5b682',height=1, width=4,command=load_button)
 Load.grid(row=9, column=2)
+
+Start = tk.Button(text="Start",font=("Helvetica", "12","bold"),bg="#fce130",height=1, width=4,command=start_button)
+Start.grid(row=2, column=2)
+
+Exit = tk.Button(text="Exit",font=("Helvetica", "12","bold"),bg="#ff775c",height=1, width=4,command=exit_button)
+Exit.grid(row=3, column=2)
 
 
 # Boutons pour se déplacer dans le jeu :
 
 # Haut :
     
-Up = tk.Button(text="Up", height=1, width=5,font=("Helvetica", "12","bold"),command=Up_button)
+Up = tk.Button(text="Up",font=("Helvetica", "12","bold"), bg="#f2e8cb",height=1, width=5, command=up_button)
 Up.grid(row=14, column=2)
 
 # Bas :
 
-Down = tk.Button(text="Down", height=1, width=5, font=("Helvetica", "12","bold"),command=Down_button)
+Down = tk.Button(text="Down", font=("Helvetica", "12","bold"), bg="#f2e8cb", height=1, width=5,command=down_button)
 Down.grid(row=16, column=2)
 
 # Gauche :
 
-Left = tk.Button(text="Left", height=1, width=5, font=("Helvetica", "12","bold"),command=Left_button)
+Left = tk.Button(text="Left", font=("Helvetica", "12","bold"), bg="#f2e8cb",height=1, width=5,command=left_button)
 Left.grid(row=15, column=1)
 
 # Droite :
 
-Right = tk.Button(text="Right", height=1, width=5,font=("Helvetica", "12","bold"),command=Right_button)
+Right = tk.Button(text="Right",font=("Helvetica", "12","bold"), bg="#f2e8cb",height=1, width=5,command=right_button)
 Right.grid(row=15, column=3,padx=8)
 
 
-# Couleur de fond de la grile :
-        
-bg_grille = tk.Frame(root, bg="#a39489", bd=3, width=570, height=570) 
-                
-bg_grille.grid(pady=20,row=0,column=0,rowspan=20,padx=20)
-
-Interface()
+Plateforme()
 
 root.mainloop()
