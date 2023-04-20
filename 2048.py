@@ -1,25 +1,21 @@
-import tkinter as tk # librairie interphace graphique
-import random as rd # libraire pour choisir aléatoirement des tuiles
-import numpy as np # libraire pour appliquer des probabilités sur les apparitions de tuiles
+import tkinter as tk
+import random as rd
+import numpy as np # libraire pour effectuer des probabilités sur les tuiles
 import couleurs2048 as color # librairie pour les couleurs des tuiles/canvas
 import pickle as pc # librairie pour la sauvegarde et le chargement de parties
 
-# Interface graphique
+# Début de l'interface graphique
     
 root = tk.Tk()
 root.title("2048")
 
-# Variables globales :
+# On utlise plusieurs variables globales qu'on appellera dans différentes fonctions :
         
 cases = []   # contient chaque détail de chaque tuile (couleur+nombre)
 grille = [] # contient les nombres présents sur la grille
-score = None   # cette variable donnera si la partie est gagnée ou perdue,
-              # 1 = win et 0 = loose
+score = None   # cette variable donnera si la partie est gagnée ou perdue, elle prendra 1 si la partie est gagnée et 0 si elle est perdue  
 
-
-# Fonctions premières  
-
-# Créer l'interface graphique du jeu 2048 : elle prendra    
+# Créer l'interface graphique du jeu 2048 :   
 
 def Interface():
    #Cette fonction va créer la plateforme de jeu
@@ -27,9 +23,9 @@ def Interface():
     for i in range (4):
         ligne = []
         for j in range (4):
-            case_frame = tk.Frame(background, bg="#c2b3a9" , width=120, height=120)
+            case_frame = tk.Frame(bg_grille, bg="#c2b3a9" , width=120, height=120)
             case_frame.grid(row=i, column=j, padx=5, pady=5)
-            case_nombre = tk.Label(background, bg="#c2b3a9" )
+            case_nombre = tk.Label(bg_grille, bg="#c2b3a9" )
             case_nombre.grid(row=i, column=j)
             case_data = {"frame": case_frame, "number": case_nombre}
             ligne.append(case_data)
@@ -299,7 +295,7 @@ def Affich_game_over(): #//créer un fond tout blanc pour afficher winner ou loo
     Interface()
     Actualisation_Inter()
     if score==1:
-        game_over_frame = tk.Frame(background, borderwidth=2)
+        game_over_frame = tk.Frame(bg_grille, borderwidth=2)
         game_over_frame.place(relx=0.5, rely=0.5, anchor="center")
         tk.Label(game_over_frame,
                  text="Winner!",
@@ -307,7 +303,7 @@ def Affich_game_over(): #//créer un fond tout blanc pour afficher winner ou loo
                  fg="#ffffff",
                  font=("Helvetica", 48, "bold")).pack()
     elif score==0:
-        game_over_frame = tk.Frame(background, borderwidth=2)
+        game_over_frame = tk.Frame(bg_grille, borderwidth=2)
         game_over_frame.place(relx=0.5, rely=0.5, anchor="center")
         tk.Label(game_over_frame,
                  text="Loser!",
@@ -325,14 +321,14 @@ Start = tk.Button(text="Start",
                     command=Start_Button,bg="#fce130"
         
                   )
-Start.grid(row=1, column=0)
+Start.grid(row=2, column=2)
 
 Exit = tk.Button(text="Exit", 
                     height=1, width=4,
                     font=("Helvetica", "12","bold"),
                     command=Exit_Button,bg="#ff775c"
                   )
-Exit.grid(row=1, column=1)
+Exit.grid(row=3, column=2)
 
 
 Save = tk.Button(text="Save", 
@@ -340,57 +336,44 @@ Save = tk.Button(text="Save",
                     font=("Helvetica", "12","bold"),command=Save_Button,bg="#f5b682"
                     
                   )
-Save.grid(row=3, column=0)
+Save.grid(row=8, column=2)
 
 Load = tk.Button(text="Load", 
                     height=1, width=4,
                     font=("Helvetica", "12","bold"),command=Load_Button,bg='#f5b682'
 
                   )
-Load.grid(row=3, column=1)
+Load.grid(row=9, column=2)
 
 
-    # Boutons déplacement  
+# Boutons pour se déplacer dans le jeu :
+
+# Haut :
     
-Up = tk.Button(text="Up", 
-                    height=1, width=4,
-                    font=("Helvetica", "12","bold"),command=Up_button
-                    
-                  )
-Up.grid(row=2, column=15)
+Up = tk.Button(text="Up", height=1, width=5,font=("Helvetica", "12","bold"),command=Up_button)
+Up.grid(row=14, column=2)
 
-Down = tk.Button(text="Down", 
-                    height=1, width=4,
-                    font=("Helvetica", "12","bold"),command=Down_button
-                    
-                  )
-Down.grid(row=4, column=15)
+# Bas :
 
+Down = tk.Button(text="Down", height=1, width=5, font=("Helvetica", "12","bold"),command=Down_button)
+Down.grid(row=16, column=2)
 
-Left = tk.Button(text="Left", 
-                    height=1, width=4,
-                    font=("Helvetica", "12","bold"),command=Left_button
-                    
-                  )
-Left.grid(row=3, column=14)
+# Gauche :
 
-Right = tk.Button(text="Right", 
-                    height=1, width=4,
-                    font=("Helvetica", "12","bold"),command=Right_button
+Left = tk.Button(text="Left", height=1, width=5, font=("Helvetica", "12","bold"),command=Left_button)
+Left.grid(row=15, column=1)
 
-                  )
-Right.grid(row=3, column=16)
+# Droite :
+
+Right = tk.Button(text="Right", height=1, width=5,font=("Helvetica", "12","bold"),command=Right_button)
+Right.grid(row=15, column=3,padx=8)
 
 
-    # Background
+# Couleur de fond de la grile :
         
-background = tk.Frame(root, 
-                bg="#a39489", 
-                bd=3, width=570, 
-                height=570
-                ) 
+bg_grille = tk.Frame(root, bg="#a39489", bd=3, width=570, height=570) 
                 
-background.grid(pady=20, columnspan=20,padx=20)
+bg_grille.grid(pady=20,row=0,column=0,rowspan=20,padx=20)
 
 Interface()
 
