@@ -9,9 +9,9 @@ import pickle as pc # librairie pour la sauvegarde et le chargement de parties
 root = tk.Tk()
 root.title("2048")
 
-## Variables globales principales :
+## Variables globales principales qu'on appellera dans plusieurs fonctions :
 
-cases = []   # possède les détail de chaque tuile (couleur+nombre)
+cases = []   # possède les détail de chaque tuile
 
 grille = [] # possède les nombres présents sur la grille  
 
