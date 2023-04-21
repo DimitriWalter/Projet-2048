@@ -1,3 +1,4 @@
+"""Fait par Yohann, Dimitri, Amine et Aboubakr"""
 import tkinter as tk
 from random import *
 import numpy as np # libraire pour effectuer des probabilités sur les tuiles
@@ -49,39 +50,31 @@ def Maj_Plateforme():
 
 ##  FONCTIONS CONCERNANT LA FIN D'UNE PARTIE :
 
-score = None   # variable qui nous donnera le résultat de la partie, elle prendra 1 si la partie est gagnée et 0 si elle est perdue
+score = None   # variable qui nous donnera le résultat de la partie, elle prendra 0 si elle est perdue
 
-## La fonction suivante transmet à Win_Or_Loose() si le joueur a gagné ou perdu :
+## La fonction suivante transmet Loose() si le joueur a perdu :
 
 def Fin_partie():
     global score
-    if (2048 in ligne for ligne in grille) == True :
-        score = 1
-        Win_Or_Lose()
-    elif Vide_mat() == False and Test_horizontale() == False and Test_Verticale() == False : 
+    if Vide_mat() == False and Test_horizontale() == False and Test_Verticale() == False : 
         score = 0
-        Win_Or_Lose()
+        Lose()
 
-## Fonction qui affiche "Gagné!" si on a gagné et "Perdu!" si on a perdu :
+## Fonction qui affiche "Perdu!" si on a perdu :
 
-win = tk.Label()
 loose = tk.Label()
 
-def Win_Or_Lose():
-    global win, loose
+def Lose():
+    global loose
     Plateforme()
     Maj_Plateforme()
-    if score==1:
-        affichage_end = tk.Frame(bg_grille, borderwidth=2)
-        affichage_end.place(relx=0.5, rely=0.5, anchor="center")
-        win = tk.Label(affichage_end, text="Gagné!", bg="#fce130", fg="#ffffff", font=("Arial", 50,"bold")).pack()
-    elif score==0:
+    if score==0:
         affichage_end = tk.Frame(bg_grille, borderwidth=4)
         affichage_end.place(relx=0.5, rely=0.5, anchor="center")
         loose = tk.Label(affichage_end,  text="Perdu!", bg="#e64c2e", fg="#ffffff", font=("Arial", 50,"bold")).pack()
 
 
-##  FONCTIONS PERMETTANT DE FAIRE DES TESTS PENDANT LA PARTIE (pour savoir si une partie est gagnée ou perdu) :
+##  FONCTIONS PERMETTANT DE FAIRE DES TESTS PENDANT LA PARTIE (pour savoir quand la partie est perdu) :
 
 ## Fonction qui permet de vérifier si il y a encore des cases vides dans la grille du jeu, pour vérifier s'il est possible de générer une nouvelle tuile sur la grille :
 
