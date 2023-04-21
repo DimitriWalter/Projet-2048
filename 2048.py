@@ -222,20 +222,20 @@ def tuile_aleatoire(matrice):
 
  # Fonction pour le bouton "Save" :
 def save_button():
-    fic = open("save_liste.txt", "wb") 
-    pc.dump(grille, fic)
-    fic.close()
+    fichier = open("sauvegarde-2048.txt", "wb") 
+    pc.dump(grille, fichier)
+    fichier.close()
 
  # Fonction pour le bouton "Load" :
 def load_button():
     global grille
-    matrice2 = []
-    fic = open("save_liste.txt", "rb")
-    b = pc.load(fic)
-    fic.close()
-    for line in b:
-        matrice2.append(line)
-    grille = matrice2
+    matrice = []
+    fichier = open("sauvegarde-2048.txt", "rb")
+    fichier_ouvert = pc.load(fichier)
+    fichier.close()
+    for l in fichier_ouvert:
+        matrice.append(l)
+    grille = matrice
     Maj_Plateforme()
 
  # Fonction pour le bouton "Start" :
