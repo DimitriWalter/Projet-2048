@@ -5,7 +5,7 @@ Les étudiants de S2MITD-03 à travailler dessus sont : Mohamed SOHBI, Yohann FR
 
 URL de dépot du projet 2048 : https://github.com/uvsq22204129/Projet-2048.git
 
-Historique et explication briève du jeu :
+# Historique et explication briève du jeu :
 
 2048 est un jeu vidéo de type puzzle conçu en mars 2014 par le développeur indépendant italien Gabriele Cirulli et publié en ligne sous licence libre via Github le 9 mars 2014.
 
@@ -13,7 +13,7 @@ Le but du jeu est de faire glisser des tuiles sur une grille, pour combiner les 
 
 Source : https://fr.wikipedia.org/wiki/2048_(jeu_vid%C3%A9o)
 
-Utilisation du programme du jeu 2048 :
+# Utilisation du programme du jeu 2048 :
 
    Premièrement, lancez le programme, une fenêtre apparaîtra sur votre ordinateur avec plusieurs boutons 
 et une grille de 2048 initialement vide. 
