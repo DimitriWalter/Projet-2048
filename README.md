@@ -1,5 +1,5 @@
 # Projet-2048
-Ce fichier README servira à documenter l'utilisation de notre programme pour le jeu du 2048 afin de bien connaître son fonctionnement.
+Ce fichier README servira à documenter l'utilisation du programme pour le jeu du 2048 afin de bien connaître son fonctionnement.
 
 Réalisé par Dimitri Walter.
 
