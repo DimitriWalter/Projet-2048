@@ -1,4 +1,3 @@
-"""Fait par Yohann, Dimitri, Amine et Aboubakr"""
 import tkinter as tk
 from random import *
 import numpy as np # libraire pour effectuer des probabilités sur les tuiles
